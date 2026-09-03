@@ -87,8 +87,8 @@ endif
 
 # Calculate version if git version is available
 ifdef KSU_GIT_VERSION_VALID
-# ksu_version: major * 30000 + git version for historical reasons
-$(eval KSU_VERSION=$(shell expr 30000 + $(KSU_GIT_VERSION) + 200))
+# ksu_version: major * 33000 + git version for historical reasons
+$(eval KSU_VERSION=$(shell expr 33000 + $(KSU_GIT_VERSION) + 200))
 $(info -- KernelSU-Next version: $(KSU_VERSION))
 ccflags-y += -DKSU_VERSION=$(KSU_VERSION)
 else
@@ -110,6 +110,16 @@ $(info -- KernelSU-Next tag fallback: $(KSU_VERSION_TAG_FALLBACK))
 ccflags-y += -DKSU_VERSION_TAG=\"$(KSU_VERSION_TAG_FALLBACK)\"
 endif
 
+MANAGER_MAJOR := 3
+MANAGER_MINOR := 3
+MANAGER_PATCH := 0
+MANAGER_VERSION_CODE := $(shell echo $$(($(MANAGER_MAJOR)*10000 + $(MANAGER_MINOR)*100 + $(MANAGER_PATCH))))
+MANAGER_VERSION_NAME := $(MANAGER_MAJOR).$(MANAGER_MINOR).$(MANAGER_PATCH)
+
+$(info -- Manager version: $(MANAGER_VERSION_NAME) (code: $(MANAGER_VERSION_CODE)))
+ccflags-y += -DMANAGER_VERSION_CODE=$(MANAGER_VERSION_CODE)
+ccflags-y += -DMANAGER_VERSION_NAME=\"$(MANAGER_VERSION_NAME)\"
+
 ifndef KSU_NEXT_MANAGER_SIZE
 KSU_NEXT_MANAGER_SIZE := 0x3e6
 endif
@@ -130,14 +140,9 @@ endif
 $(info -- KernelSU-Next Manager signature size: $(KSU_NEXT_MANAGER_SIZE))
 $(info -- KernelSU-Next Manager signature hash: $(KSU_NEXT_MANAGER_HASH))
 
-# ==============================================
-# Load manager signatures
-# ==============================================
+
 include $(src)/manager/manager_sign.mk
 
-# ==============================================
-# Multi-Manager Support (tanpa Official & ReSukiSU)
-# ==============================================
 ifdef CONFIG_KSU_MULTI_MANAGER_SUPPORT
 
 # 5ec1cff/KernelSU
@@ -214,9 +219,7 @@ endif
 $(info -- Supported Unofficial Managers: MKSU, RKSU, KOWSU, SukiSU-Ultra, ResukiSU)
 
 endif
-# ==============================================
-# RKSU: checks for available hook
-## Logic flipped for HAVE_KSU_HOOK: 0 is success, 1 is failure
+
 HAVE_KSU_HOOK ?= 1
 
 # Checks hooks state
