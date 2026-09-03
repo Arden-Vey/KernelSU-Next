@@ -62,7 +62,7 @@ config KSU_KPROBES_HOOK
 config KSU_MULTI_MANAGER_SUPPORT
         bool "Multi Manager Support"
         depends on KSU
-        default n
+        default y
         help
           Enable support for multiple KernelSU manager APKs.
           
