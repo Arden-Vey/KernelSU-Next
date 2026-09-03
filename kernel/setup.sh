@@ -2,7 +2,7 @@
 set -eu
 
 GKI_ROOT=$(pwd)
-OWNER="JBHPocong"
+OWNER="Arden-Vey"
 REPO="KernelSU-Next"
 
 display_usage() {
